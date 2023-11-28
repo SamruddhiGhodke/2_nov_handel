@@ -1,6 +1,7 @@
 package com.example.jwtProject.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,23 +54,33 @@ public class RegistrationEntity implements UserDetails {
     @Column(name="financialName")
     private String financialName;
 
+    @Column(name="Admin_Id")
+    private Long adminId;
+
     @OneToMany (mappedBy = "registration", fetch = FetchType.EAGER)
     private List<DomesticMaterialEntity> domesticMaterialEntity;
 
-//    @OneToMany (mappedBy = "registrationEntity")
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "Admin_Id",insertable=false, updatable=false)
+    private AdminEntity adminEntity;
+
+//    @OneToMany (mappedBy = "registration")
 //    private List<InternationalMaterialEntity> internationalMaterialEntity;
 
 
     public RegistrationEntity() {
     }
 
-    public Long getId() {
+    public Long getCorporateId() {
         return corporateId;
     }
 
-    public void setId(Long id) {
-        this.corporateId = id;
+    public void setCorporateId(Long corporateId) {
+        this.corporateId = corporateId;
     }
+
+
 
     public String getEntityName() {
         return entityName;
@@ -209,6 +220,14 @@ public class RegistrationEntity implements UserDetails {
         this.password = password;
     }
 
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
+    }
+
     public Long getDomesticMaterialId() {
         return domesticMaterialId;
     }
@@ -240,5 +259,14 @@ public class RegistrationEntity implements UserDetails {
 //    public void setInternationalMaterialEntity(List<InternationalMaterialEntity> internationalMaterialEntity) {
 //        this.internationalMaterialEntity = internationalMaterialEntity;
 //    }
+
+
+    public AdminEntity getAdminEntity() {
+        return adminEntity;
+    }
+
+    public void setAdminEntity(AdminEntity adminEntity) {
+        this.adminEntity = adminEntity;
+    }
 }
 

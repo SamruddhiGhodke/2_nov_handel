@@ -1,5 +1,6 @@
 package com.example.jwtProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,8 +11,6 @@ public class InternationalMaterialEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="International_Material_Id")
     private Long internationalMaterialId;
-
-
 
     @Column(name="Material_Name")
     private String materialName;
@@ -28,12 +27,11 @@ public class InternationalMaterialEntity {
     @Column(name="Unit_Price")
     private String unitPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "corporate_id")
-    private RegistrationEntity registrationEntity;
-
+//    @JsonIgnore
 //    @ManyToOne
-//    private RegistrationEntity registrationEntity;
+//    @JoinColumn(name = "corporate_id")
+//    private RegistrationEntity registration;
+
 
     public InternationalMaterialEntity() {
     }
@@ -86,18 +84,11 @@ public class InternationalMaterialEntity {
         this.unitPrice = unitPrice;
     }
 
-    public RegistrationEntity getRegistrationEntity() {
-        return registrationEntity;
-    }
-
-    public void setRegistrationEntity(RegistrationEntity registrationEntity) {
-        this.registrationEntity = registrationEntity;
-    }
-//    public RegistrationEntity getRegistrationEntity() {
-//        return registrationEntity;
+//    public RegistrationEntity getRegistration() {
+//        return registration;
 //    }
 //
-//    public void setRegistrationEntity(RegistrationEntity registrationEntity) {
-//        this.registrationEntity = registrationEntity;
+//    public void setRegistration(RegistrationEntity registration) {
+//        this.registration = registration;
 //    }
 }

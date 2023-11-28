@@ -1,7 +1,9 @@
 package com.example.jwtProject.Util;
 
 import com.example.jwtProject.Entity.RegistrationEntity;
+import com.example.jwtProject.Entity.RequestSupportEntity;
 import com.example.jwtProject.Repository.ClientRegi;
+import com.example.jwtProject.Repository.RequestSupportRepo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class EmailUtil {
     private JavaMailSender javaMailSender;
     @Autowired
     private ClientRegi clientRegi;
+
+    @Autowired
+    private RequestSupportRepo requestSupportRepo;
 
     public void sendOtpEmail(String emailId, String otp) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -84,7 +89,7 @@ public class EmailUtil {
         emailBody += "<p>We are delighted to welcome you to the Handel Bidding Platform! Your successful registration marks the beginning of an exciting journey towards new business opportunities and collaborations.</p>";
         emailBody += "<p>Your login credentials are as follows:</p>";
         emailBody += "<p>User ID: " + userId + "</p>";
-        emailBody += "<p>Password: 123456</p>";
+        emailBody += "<p> OneTIme Password: 123456</p>";
         emailBody += "<br><p>Best regards,</p>";
         emailBody += "<p>Handel</p>";
         emailBody += "</body></html>";
@@ -108,21 +113,40 @@ public class EmailUtil {
         mimeMessageHelper.setText(emailBody, true);
         javaMailSender.send(mimeMessage);
     }
-//
-//    public void InternationalEmail(String emailId) throws MessagingException {
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        RegistrationEntity registrationEntity = clientRegi.findByEmailId(emailId)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        String entityName = registrationEntity.getEntityName();
-//        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-//        mimeMessageHelper.setTo(emailId);
-//        mimeMessageHelper.setSubject("International Material Registered");
-//
-//        String emailBody = String.format("Hi %s,<br><br>", entityName);
-//        emailBody += "International Material Registered <br>";
-//        mimeMessageHelper.setText(emailBody, true);
-//        javaMailSender.send(mimeMessage);
-//    }
+
+    public void InternationalEmail(String emailId) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        RegistrationEntity registrationEntity = clientRegi.findByEmailId(emailId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String entityName = registrationEntity.getEntityName();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(emailId);
+        mimeMessageHelper.setSubject("International Material Registered");
+
+        String emailBody = String.format("Hi %s,<br><br>", entityName);
+        emailBody += "International Material Registered <br>";
+        mimeMessageHelper.setText(emailBody, true);
+        javaMailSender.send(mimeMessage);
+    }
+
+    public void RequestSupportEmail(String emailId) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        RegistrationEntity registrationEntity = clientRegi.findByEmailId(emailId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        RequestSupportEntity requestSupportEntity = (RequestSupportEntity) requestSupportRepo.findByUserEmail(emailId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String entityName = registrationEntity.getEntityName();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(emailId);
+        mimeMessageHelper.setSubject("Support from Handel");
+
+        String emailBody = String.format("Hi %s,<br><br>", entityName);
+        emailBody += "Support from Handel <br>";
+        mimeMessageHelper.setText(emailBody, true);
+        javaMailSender.send(mimeMessage);
+    }
 
 }

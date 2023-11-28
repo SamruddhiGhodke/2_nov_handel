@@ -3,6 +3,7 @@ package com.example.jwtProject.Service;
 
 import com.example.jwtProject.Entity.AdminEntity;
 import com.example.jwtProject.Entity.RegistrationEntity;
+import com.example.jwtProject.Model.AdminRequestModel;
 import com.example.jwtProject.Model.JwtModel;
 import com.example.jwtProject.Repository.AdminRepo;
 import com.example.jwtProject.Repository.ClientRegi;
@@ -25,24 +26,23 @@ import java.util.Optional;
 
 @Service
 public class JwtService {
-   @Autowired
+    @Autowired
     private ClientRegi clientRegi;
 
     @Autowired
     private AdminRepo adminRepo;
-   @Autowired
-   private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private EmailUtil emailUtil;
 
-    private final String gstCertificatePath="C:\\Users\\EC21\\OneDrive - Mitrisk Consulting LLP\\Documents\\samruddhi\\gstCertificate";
-    private final String financialsPath="C:\\Users\\EC21\\OneDrive - Mitrisk Consulting LLP\\Documents\\samruddhi\\financials\\";
-
+    private final String gstCertificatePath = "C:\\Users\\EC21\\OneDrive - Mitrisk Consulting LLP\\Documents\\samruddhi\\gstCertificate\\";
+    private final String financialsPath = "C:\\Users\\EC21\\OneDrive - Mitrisk Consulting LLP\\Documents\\samruddhi\\financials\\";
 
 
     // API for retrieving user data
-    public List<RegistrationEntity> getUser(){
+    public List<RegistrationEntity> getUser() {
         return clientRegi.findAll();
     }
 
@@ -94,23 +94,26 @@ public class JwtService {
 
 
     // API for uploading files and creating or updating a user
-    public RegistrationEntity uploadFileAndUser(MultipartFile gst,MultipartFile financial, JwtModel jwtModel) throws IOException, MessagingException {
-        String filePath=gstCertificatePath+gst.getOriginalFilename();
-        String filePath1=financialsPath+financial.getOriginalFilename();
+    public RegistrationEntity uploadFileAndUser(MultipartFile gst, MultipartFile financial, JwtModel jwtModel) throws IOException, MessagingException {
+        String filePath = gstCertificatePath +jwtModel.getEntityName()+"_"+ gst.getOriginalFilename();
+        String filePath1 = financialsPath + jwtModel.getEntityName()+"_"+financial.getOriginalFilename();
+        AdminEntity adminEntity = new AdminEntity();
+        System.out.println(adminEntity.getAdminEmailId());
         RegistrationEntity registrationEntity = new RegistrationEntity();
         registrationEntity.setIecCode(jwtModel.getIecCode());
-        registrationEntity.getBeneficiary(jwtModel.getBeneficiary());
+        registrationEntity.setBeneficiary(jwtModel.getBeneficiary());
         registrationEntity.setUserName(jwtModel.getUserName());
         registrationEntity.setMobileNumber(jwtModel.getMobileNumber());
         registrationEntity.setEmailId(jwtModel.getEmailId());
         registrationEntity.setAccountNumber(jwtModel.getAccountNumber());
         registrationEntity.setSwiftCode(jwtModel.getSwiftCode());
         registrationEntity.setEntityName(jwtModel.getEntityName());
-        registrationEntity.setGstCertificateName(registrationEntity.getEntityName()+gst.getOriginalFilename());
+        registrationEntity.setGstCertificateName(registrationEntity.getEntityName()+"_" + gst.getOriginalFilename());
         registrationEntity.setFinancialName(financial.getOriginalFilename());
         registrationEntity.setGstCertificates(filePath);
         registrationEntity.setFinancialCertificates(filePath1);
-       // registrationEntity.setPassword(passwordEncoder.encode(jwtModel.getPassword()));
+        registrationEntity.setAdminId(Long.valueOf("1"));
+        // registrationEntity.setPassword(passwordEncoder.encode(jwtModel.getPassword()));
 
 //        registrationEntity.setInternationalMaterialId(jwtModel.getInternationalMaterialId());
 //        registrationEntity.setDomesticMaterialId(jwtModel.getDomesticMaterialId());
@@ -125,6 +128,7 @@ public class JwtService {
         return registrationEntity;
 
     }
+
     // API for downloading a file
     public byte[] downloadFile(String fileName) throws IOException {
         RegistrationEntity dbGstName = clientRegi.findByGstCertificateName(fileName);
@@ -139,11 +143,11 @@ public class JwtService {
 
 
     // API for handling forgotten passwords
-    public String forgotPassword(String emailId){
+    public String forgotPassword(String emailId) {
 
         clientRegi.findByEmailId(emailId).
-                orElseThrow(()->new RuntimeException("user not found with this email"+ emailId));
-        try{
+                orElseThrow(() -> new RuntimeException("user not found with this email" + emailId));
+        try {
             emailUtil.sendPasswordEmail(emailId);
         } catch (MessagingException e) {
             throw new RuntimeException("unable to set password try again!");
@@ -160,18 +164,23 @@ public class JwtService {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            // Old password matches, update with new hashed password
-            String newHashedPassword = passwordEncoder.encode(newPassword);
-            registrationEntity.setPassword(newHashedPassword);
-            clientRegi.save(registrationEntity);
-            emailUtil.sendPasswordResetEmail(emailId);
-            return "New password set successfully";
-        }
+        // Old password matches, update with new hashed password
+        String newHashedPassword = passwordEncoder.encode(newPassword);
+        registrationEntity.setPassword(newHashedPassword);
+        clientRegi.save(registrationEntity);
+        emailUtil.sendPasswordResetEmail(emailId);
+        return "New password set successfully";
+    }
 
     public AdminEntity createAdmin(String emailId, String password) {
         AdminEntity adminEntity = new AdminEntity();
         adminEntity.setAdminEmailId(emailId);
         adminEntity.setPassword(password);
         return adminRepo.save(adminEntity);
+    }
+
+
+    public List<AdminEntity> adminUser() {
+        return adminRepo.findAll();
     }
 }

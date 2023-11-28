@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@CrossOrigin(origins = "http://localhost:4200",maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -50,6 +51,7 @@ public class AuthController {
 
 
     // API for user login
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
         String token = this.doAuthenticate(request.getEmail(), request.getPassword());
@@ -59,7 +61,7 @@ public class AuthController {
         JwtResponse response = JwtResponse.builder()
                 .jwtToken(token)
                 .userName(userDetails.getUsername()).build();
-        
+
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

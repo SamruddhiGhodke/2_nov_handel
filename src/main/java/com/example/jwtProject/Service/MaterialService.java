@@ -11,7 +11,6 @@ import com.example.jwtProject.Repository.InternationalRepo;
 import com.example.jwtProject.Util.EmailUtil;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,9 +22,11 @@ public class MaterialService {
     public DomesticRepo domesticRepo;
 
     @Autowired
-    public ClientRegi clientRegi;
-    @Autowired
     public InternationalRepo internationalRepo;
+
+    @Autowired
+    public ClientRegi clientRegi;
+
 
     @Autowired
     private EmailUtil emailUtil;
@@ -33,49 +34,6 @@ public class MaterialService {
 
 
     // API for creating or updating a domestic entry
-//    public DomesticMaterialEntity createDomestic(DomesticModel domesticModel, Long corporateId) throws Exception {
-//        System.out.println(corporateId);
-//        Long domesticMaterialId = domesticModel.getDomesticMaterialId();
-//
-//        if (domesticMaterialId != null && domesticMaterialId != 0) {
-//            DomesticMaterialEntity domesticMaterialEntity = domesticRepo.findByDomesticMaterialId(domesticMaterialId);
-//            domesticMaterialEntity.setMaterialName(domesticModel.getMaterialName());
-//            domesticMaterialEntity.setQuantity(domesticModel.getQuantity());
-//            domesticMaterialEntity.setCreditPeriod(domesticModel.getCreditPeriod());
-//            domesticMaterialEntity.setUnitPrice(domesticModel.getUnitPrice());
-//            domesticMaterialEntity.setSupplierName(domesticModel.getSupplierName());
-//
-//            return domesticRepo.save(domesticMaterialEntity);
-//        } else {
-//            if (corporateId != null) {
-//                Optional<RegistrationEntity> registrationEntityOptional = clientRegi.findByCorporateId(corporateId);
-//                if (registrationEntityOptional.isPresent()) {
-//                    RegistrationEntity registrationEntity = registrationEntityOptional.get();
-//                    DomesticMaterialEntity domesticMaterial = new DomesticMaterialEntity();
-//                    domesticMaterial.setMaterialName(domesticModel.getMaterialName());
-//                    domesticMaterial.setQuantity(domesticModel.getQuantity());
-//                    domesticMaterial.setCreditPeriod(domesticModel.getCreditPeriod());
-//                    domesticMaterial.setUnitPrice(domesticModel.getUnitPrice());
-//                    domesticMaterial.setSupplierName(domesticModel.getSupplierName());
-//                    domesticMaterial.setRegistration(registrationEntity);
-//                    domesticRepo.save(domesticMaterial);
-//                    registrationEntity.setDomesticMaterialId(domesticMaterial.getDomesticMaterialId());
-//                    clientRegi.save(registrationEntity);
-//
-//                    emailUtil.domesticEmail(domesticModel.getJwtModel().getEmailId());
-//                    System.out.println("email Id"+ domesticModel.getJwtModel().getEmailId());
-//                    return domesticMaterial;
-//                }
-//            } else {
-//
-//                throw new Exception("Invalid corporateId: corporateId is null");
-//
-//            }
-//        }
-//        return null;
-//    }
-//
-
     public DomesticMaterialEntity createDomestic(DomesticModel domesticModel, Long corporateId) throws Exception, MessagingException {
         System.out.println(corporateId);
         Long domesticMaterialId = domesticModel.getDomesticMaterialId();
@@ -126,11 +84,12 @@ public class MaterialService {
     }
 
     // API for creating or updating a international entry
-    public InternationalMaterialEntity createInternational(InternationalModel internationalModel) {
-        Long internationalId = internationalModel.getInternationalMaterialId();
+        public InternationalMaterialEntity createInternational(InternationalModel internationalModel, Long corporateId) throws Exception {
+        System.out.println(corporateId);
+        Long internationalMaterialId = internationalModel.getInternationalMaterialId();
 
-        if (internationalId != null && internationalId != 0) {
-            InternationalMaterialEntity internationalMaterialEntity = internationalRepo.findByInternationalMaterialId(internationalId);
+        if (internationalMaterialId != null && internationalMaterialId != 0) {
+            InternationalMaterialEntity internationalMaterialEntity = internationalRepo.findByInternationalMaterialId(internationalMaterialId);
             internationalMaterialEntity.setMaterialName(internationalModel.getMaterialName());
             internationalMaterialEntity.setQuantity(internationalModel.getQuantity());
             internationalMaterialEntity.setCreditPeriod(internationalModel.getCreditPeriod());
@@ -138,19 +97,34 @@ public class MaterialService {
             internationalMaterialEntity.setSupplierName(internationalModel.getSupplierName());
 
             return internationalRepo.save(internationalMaterialEntity);
+        } else {
+            if (corporateId != null) {
+                Optional<RegistrationEntity> registrationEntityOptional = clientRegi.findByCorporateId(corporateId);
+                if (registrationEntityOptional.isPresent()) {
+                    RegistrationEntity registrationEntity = registrationEntityOptional.get();
+                    InternationalMaterialEntity internationalMaterial = new InternationalMaterialEntity();
+                    internationalMaterial.setMaterialName(internationalModel.getMaterialName());
+                    internationalMaterial.setQuantity(internationalModel.getQuantity());
+                    internationalMaterial.setCreditPeriod(internationalModel.getCreditPeriod());
+                    internationalMaterial.setUnitPrice(internationalModel.getUnitPrice());
+                    internationalMaterial.setSupplierName(internationalModel.getSupplierName());
+                   // internationalMaterial.setRegistration(registrationEntity);
+                    internationalRepo.save(internationalMaterial);
+                    registrationEntity.setInternationalMaterialId(internationalMaterial.getInternationalMaterialId());
+                    clientRegi.save(registrationEntity);
+
+                    emailUtil.InternationalEmail(internationalModel.getJwtModel().getEmailId());
+                    System.out.println("email Id"+ internationalModel.getJwtModel().getEmailId());
+                    return internationalMaterial;
+                }
+            } else {
+
+                throw new Exception("Invalid corporateId: corporateId is null");
+
+            }
         }
-        else {
-
-            InternationalMaterialEntity internationalMaterial = new InternationalMaterialEntity();
-            internationalMaterial.setMaterialName(internationalModel.getMaterialName());
-            internationalMaterial.setQuantity(internationalModel.getQuantity());
-            internationalMaterial.setCreditPeriod(internationalModel.getCreditPeriod());
-            internationalMaterial.setUnitPrice(internationalModel.getUnitPrice());
-            internationalMaterial.setSupplierName(internationalModel.getSupplierName());
-
-            return internationalRepo.save(internationalMaterial);
-        }
-
+        return null;
+    }
 
     }
-}
+

@@ -29,10 +29,6 @@ public class DomesticMaterialEntity {
     @ManyToOne
     @JoinColumn(name = "corporate_id")
     private RegistrationEntity registration;
-   // private RegistrationEntity registrationEntity;
-
-//    @ManyToOne
-//    private RegistrationEntity registrationEntity;
 
     public DomesticMaterialEntity() {
     }

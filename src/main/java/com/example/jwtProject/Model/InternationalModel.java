@@ -8,6 +8,8 @@ public class InternationalModel {
     private String quantity;
     private String unitPrice;
 
+    private JwtModel jwtModel;
+
     public Long getInternationalMaterialId() {
         return internationalMaterialId;
     }
@@ -54,5 +56,13 @@ public class InternationalModel {
 
     public void setUnitPrice(String unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public JwtModel getJwtModel() {
+        return jwtModel;
+    }
+
+    public void setJwtModel(JwtModel jwtModel) {
+        this.jwtModel = jwtModel;
     }
 }

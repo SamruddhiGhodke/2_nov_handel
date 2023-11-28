@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name="Admin")
@@ -20,6 +21,9 @@ public class AdminEntity implements UserDetails {
 
     @Column(name="Password")
     private String password;
+
+    @OneToMany (mappedBy = "adminEntity", fetch = FetchType.EAGER)
+    private List<RegistrationEntity> registrationEntities;
 
     public AdminEntity() {
     }
@@ -76,5 +80,13 @@ public class AdminEntity implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<RegistrationEntity> getRegistrationEntities() {
+        return registrationEntities;
+    }
+
+    public void setRegistrationEntities(List<RegistrationEntity> registrationEntities) {
+        this.registrationEntities = registrationEntities;
     }
 }
