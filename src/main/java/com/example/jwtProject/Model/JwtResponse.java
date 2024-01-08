@@ -11,6 +11,7 @@ import lombok.*;
 public class JwtResponse {
     private String jwtToken;
     private String userName;
+    private String entityName;
 
     public String getJwtToken() {
         return jwtToken;
@@ -28,5 +29,11 @@ public class JwtResponse {
         this.userName = userName;
     }
 
-	
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
 }

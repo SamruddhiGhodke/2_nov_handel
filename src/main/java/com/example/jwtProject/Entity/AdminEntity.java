@@ -25,6 +25,12 @@ public class AdminEntity implements UserDetails {
     @OneToMany (mappedBy = "adminEntity", fetch = FetchType.EAGER)
     private List<RegistrationEntity> registrationEntities;
 
+    @OneToMany (mappedBy = "adminEntity", fetch = FetchType.EAGER)
+    private List<TradersEntity> tradersEntities;
+
+    @OneToMany (mappedBy = "adminEntity", fetch = FetchType.EAGER)
+    private List<IntermediaryEntity> intermediaryEntities;
+
     public AdminEntity() {
     }
 
@@ -88,5 +94,21 @@ public class AdminEntity implements UserDetails {
 
     public void setRegistrationEntities(List<RegistrationEntity> registrationEntities) {
         this.registrationEntities = registrationEntities;
+    }
+
+    public List<TradersEntity> getTradersEntities() {
+        return tradersEntities;
+    }
+
+    public void setTradersEntities(List<TradersEntity> tradersEntities) {
+        this.tradersEntities = tradersEntities;
+    }
+
+    public List<IntermediaryEntity> getIntermediaryEntities() {
+        return intermediaryEntities;
+    }
+
+    public void setIntermediaryEntities(List<IntermediaryEntity> intermediaryEntities) {
+        this.intermediaryEntities = intermediaryEntities;
     }
 }

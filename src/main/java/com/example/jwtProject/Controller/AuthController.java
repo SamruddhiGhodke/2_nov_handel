@@ -1,10 +1,7 @@
 package com.example.jwtProject.Controller;
 
-
-
 import com.example.jwtProject.Entity.AdminEntity;
 import com.example.jwtProject.Entity.RegistrationEntity;
-import com.example.jwtProject.Model.AdminRequestModel;
 import com.example.jwtProject.Model.JwtModel;
 import com.example.jwtProject.Model.JwtRequest;
 import com.example.jwtProject.Model.JwtResponse;
@@ -20,18 +17,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:4200",maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private Map<String, String> resetTokenMap = new HashMap<>();
 
     @Autowired
     private AuthenticationManager manager;
@@ -50,23 +51,10 @@ public class AuthController {
 
 
 
-    // API for user login
-
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
-        String token = this.doAuthenticate(request.getEmail(), request.getPassword());
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-
-        JwtResponse response = JwtResponse.builder()
-                .jwtToken(token)
-                .userName(userDetails.getUsername()).build();
 
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
-    // Authentication logic
+//    // Authentication logic
     private String doAuthenticate(String email, String password) {
 
         System.out.println("Attempting authentication for email: " + email);
@@ -79,7 +67,7 @@ public class AuthController {
                 throw new IllegalArgumentException("Password cannot be empty or whitespace.");
             }
 
-            if (password.equals("admin@12345")) {
+            if (password.equals("Mumbai@2024")) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 String token = helper.generateToken(userDetails);
                 System.out.println("Authentication successful");
@@ -93,12 +81,15 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             String entityPassword = registrationEntity.getPassword();
+            String entityName = registrationEntity.getEntityName();
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             if (StringUtils.isBlank(password)) {
                 throw new IllegalArgumentException("Password cannot be empty or whitespace.");
             }
 
-            if (password.equals("admin@12345")) {
+            if (password.equals("Mumbai@2024") || passwordEncoder.matches(password, entityPassword)) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 String token = helper.generateToken(userDetails);
                 System.out.println("Authentication successful");
@@ -109,13 +100,39 @@ public class AuthController {
         }
     }
 
+    // API for user login
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
+        String token = this.doAuthenticate(request.getEmail(), request.getPassword());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        JwtResponse response = buildJwtResponse(request.getEmail(), userDetails, token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private JwtResponse buildJwtResponse(String email, UserDetails userDetails, String token) {
+        if (isAdmin(email)) {
+            AdminEntity adminEntity = adminRepo.findByAdminEmailId(email)
+                    .orElseThrow(() -> new RuntimeException("Admin not found"));
+            return JwtResponse.builder()
+                    .jwtToken(token)
+                    .userName(userDetails.getUsername())
+                    .build();
+        } else {
+            RegistrationEntity registrationEntity = clientRegi.findByEmailId(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            return JwtResponse.builder()
+                    .jwtToken(token)
+                    .userName(userDetails.getUsername())
+                    .entityName(registrationEntity.getEntityName())
+                    .build();
+        }
+    }
+
+    private boolean isAdmin(String email) {
+        return "admin@handel.co.in".equals(email);
+    }
 
 
-    // API for creating a new user
-//    @PostMapping("/createUser")
-//    public RegistrationEntity createUser(@RequestBody JwtModel jwtModel) throws MessagingException {
-//        return jwtService.createUser(jwtModel);
-//    }
 
     // API for uploading files and user data
     @PostMapping("/uploadFileAndUser")
@@ -148,14 +165,16 @@ public class AuthController {
 
     // API for handling forgotten passwords
     @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@RequestParam String emailId){
-        return new ResponseEntity<>(jwtService.forgotPassword(emailId), HttpStatus.OK);
+    public ResponseEntity<String> forgotPassword(@RequestBody JwtRequest request) {
+        return new ResponseEntity<>(jwtService.forgotPassword(request.getEmail()), HttpStatus.OK);
     }
+
+
 
     // API for setting a new password
     @PostMapping("/setPassword")
-    public ResponseEntity<String> setPassword(@RequestParam String emailId, @RequestParam String newPassword) throws MessagingException {
-        return new ResponseEntity<>(jwtService.setPassword(emailId,newPassword), HttpStatus.OK);
+    public ResponseEntity<String> setPassword( @RequestParam String emailId,@RequestParam String newPassword, @RequestParam String confirmPassword) throws MessagingException {
+        return new ResponseEntity<>(jwtService.setPassword(emailId,newPassword,confirmPassword), HttpStatus.OK);
     }
 
 

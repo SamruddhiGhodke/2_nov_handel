@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InternationalRepo extends JpaRepository<InternationalMaterialEntity, Long> {
     InternationalMaterialEntity findByInternationalMaterialId(Long internationalId);
+
 }

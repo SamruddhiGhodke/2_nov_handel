@@ -9,6 +9,8 @@ import lombok.*;
 @ToString
 public class JwtModel {
     private Long corporateId;
+    private Long traderId;
+    private Long intermediaryId;
     private String entityName;
     private String iecCode;
     private String gstCertificates;
@@ -25,12 +27,29 @@ public class JwtModel {
     private String gstCertificateName;
     private String financialName;
 
-    public Long getId() {
+
+    public Long getCorporateId() {
         return corporateId;
     }
 
-    public void setId(Long corporateId) {
+    public void setCorporateId(Long corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public Long getTraderId() {
+        return traderId;
+    }
+
+    public void setTraderId(Long traderId) {
+        this.traderId = traderId;
+    }
+
+    public Long getIntermediaryId() {
+        return intermediaryId;
+    }
+
+    public void setIntermediaryId(Long intermediaryId) {
+        this.intermediaryId = intermediaryId;
     }
 
     public String getEntityName() {

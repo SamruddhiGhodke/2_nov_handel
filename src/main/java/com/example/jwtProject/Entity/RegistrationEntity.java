@@ -57,6 +57,9 @@ public class RegistrationEntity implements UserDetails {
     @Column(name="Admin_Id")
     private Long adminId;
 
+    @Column(name="status")
+    private String status;
+
     @OneToMany (mappedBy = "registration", fetch = FetchType.EAGER)
     private List<DomesticMaterialEntity> domesticMaterialEntity;
 
@@ -65,8 +68,8 @@ public class RegistrationEntity implements UserDetails {
     @JoinColumn(name = "Admin_Id",insertable=false, updatable=false)
     private AdminEntity adminEntity;
 
-//    @OneToMany (mappedBy = "registration")
-//    private List<InternationalMaterialEntity> internationalMaterialEntity;
+    @OneToMany (mappedBy = "registration")
+    private List<InternationalMaterialEntity> internationalMaterialEntity;
 
 
     public RegistrationEntity() {
@@ -252,13 +255,13 @@ public class RegistrationEntity implements UserDetails {
         this.domesticMaterialEntity = domesticMaterialEntity;
     }
 
-//    public List<InternationalMaterialEntity> getInternationalMaterialEntity() {
-//        return internationalMaterialEntity;
-//    }
-//
-//    public void setInternationalMaterialEntity(List<InternationalMaterialEntity> internationalMaterialEntity) {
-//        this.internationalMaterialEntity = internationalMaterialEntity;
-//    }
+    public List<InternationalMaterialEntity> getInternationalMaterialEntity() {
+        return internationalMaterialEntity;
+    }
+
+    public void setInternationalMaterialEntity(List<InternationalMaterialEntity> internationalMaterialEntity) {
+        this.internationalMaterialEntity = internationalMaterialEntity;
+    }
 
 
     public AdminEntity getAdminEntity() {
@@ -267,6 +270,14 @@ public class RegistrationEntity implements UserDetails {
 
     public void setAdminEntity(AdminEntity adminEntity) {
         this.adminEntity = adminEntity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 

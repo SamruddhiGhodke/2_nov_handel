@@ -27,10 +27,10 @@ public class InternationalMaterialEntity {
     @Column(name="Unit_Price")
     private String unitPrice;
 
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "corporate_id")
-//    private RegistrationEntity registration;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "corporate_id")
+    private RegistrationEntity registration;
 
 
     public InternationalMaterialEntity() {
@@ -84,11 +84,11 @@ public class InternationalMaterialEntity {
         this.unitPrice = unitPrice;
     }
 
-//    public RegistrationEntity getRegistration() {
-//        return registration;
-//    }
-//
-//    public void setRegistration(RegistrationEntity registration) {
-//        this.registration = registration;
-//    }
+    public RegistrationEntity getRegistration() {
+        return registration;
+    }
+
+    public void setRegistration(RegistrationEntity registration) {
+        this.registration = registration;
+    }
 }

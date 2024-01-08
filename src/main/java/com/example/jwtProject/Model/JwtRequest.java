@@ -11,6 +11,7 @@ import lombok.*;
 public class JwtRequest {
     private String emailId;
     private String password;
+    private String entityName;
 
     public String getEmail() {
         return emailId;
@@ -26,5 +27,13 @@ public class JwtRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 }

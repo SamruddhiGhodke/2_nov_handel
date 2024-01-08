@@ -108,23 +108,17 @@ public class MaterialService {
                     internationalMaterial.setCreditPeriod(internationalModel.getCreditPeriod());
                     internationalMaterial.setUnitPrice(internationalModel.getUnitPrice());
                     internationalMaterial.setSupplierName(internationalModel.getSupplierName());
-                   // internationalMaterial.setRegistration(registrationEntity);
                     internationalRepo.save(internationalMaterial);
                     registrationEntity.setInternationalMaterialId(internationalMaterial.getInternationalMaterialId());
                     clientRegi.save(registrationEntity);
-
                     emailUtil.InternationalEmail(internationalModel.getJwtModel().getEmailId());
-                    System.out.println("email Id"+ internationalModel.getJwtModel().getEmailId());
                     return internationalMaterial;
                 }
             } else {
-
                 throw new Exception("Invalid corporateId: corporateId is null");
-
             }
         }
         return null;
     }
-
     }
 
