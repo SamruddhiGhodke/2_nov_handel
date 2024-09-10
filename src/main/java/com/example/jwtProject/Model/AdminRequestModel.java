@@ -14,6 +14,7 @@ public class AdminRequestModel {
     private String password;
 
     public String getAdminEmailId() {
+
         return adminEmailId;
     }
 

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @SessionAttributes("msg")
@@ -40,14 +41,15 @@ public class JwtController {
     private EmailUtil emailUtil;
 
     // API for retrieving user data
-    @GetMapping("/user")
-    public List<RegistrationEntity> getUser() {
+    @GetMapping("/getUser")
+    public List<RegistrationEntity> getUser(@RequestParam Long corporateId) {
 
-        return this.jwtService.getUser();
+        return this.jwtService.getUser(corporateId);
     }
+
     @GetMapping("/corporateCount")
     public long getUserCount() {
-        List<RegistrationEntity> users = this.jwtService.getUser();
+        List<RegistrationEntity> users = this.jwtService.getUserCount();
         return users.size();
     }
 
@@ -75,6 +77,7 @@ public class JwtController {
 
     @GetMapping("/adminUser")
     public List<AdminEntity> adminUser() {
+
         return this.jwtService.adminUser();
     }
 
@@ -84,19 +87,28 @@ public class JwtController {
         return principal.getName();
     }
 
-    @PostMapping("/submit")
+
+    @PostMapping("/submitSupportRequest")
     public ResponseEntity<String> submitSupportRequest(@RequestBody RequestSupportEntity requestSupportEntity) {
         try {
-            requestSupportRepo.save(requestSupportEntity);
-            emailUtil.RequestSupportEmail(requestSupportEntity.getUserEmail());
-            return ResponseEntity.ok("Support request submitted successfully!");
+            Optional<AdminEntity> adminOptional = jwtService.getAdminByEmail("care@actorsboard.com");
 
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error submitting support request: " + e.getMessage());
+            if (adminOptional.isPresent()) {
+                AdminEntity admin = adminOptional.get();
+                String adminMailId = admin.getAdminEmailId();
+
+                requestSupportRepo.save(requestSupportEntity);
+                emailUtil.RequestSupportEmail(adminMailId);
+
+                return ResponseEntity.ok("Support request submitted successfully!");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Invalid admin email. Support request not submitted.");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error submitting support request", e);
         }
     }
-
 
     @PostMapping("/deleteCorporate/{corporateId}")
     public ResponseEntity<String> deleteCorporateId(@PathVariable Long corporateId) {

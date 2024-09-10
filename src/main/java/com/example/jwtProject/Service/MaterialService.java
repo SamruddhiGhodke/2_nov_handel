@@ -44,7 +44,7 @@ public class MaterialService {
             if (corporateId != null) {
                 RegistrationEntity registrationEntity = clientRegi.findByCorporateId(corporateId)
                         .orElseThrow(() -> new Exception("Invalid corporateId: " + corporateId));
-                return createNewDomesticMaterial(domesticModel, registrationEntity);
+                return createNewDomesticMaterial(domesticModel);
             } else {
                 throw new Exception("Invalid corporateId: corporateId is null");
             }
@@ -58,20 +58,19 @@ public class MaterialService {
         return domesticRepo.save(domesticMaterialEntity);
     }
 
-    private DomesticMaterialEntity createNewDomesticMaterial(DomesticModel domesticModel, RegistrationEntity registrationEntity) throws MessagingException {
+    private DomesticMaterialEntity createNewDomesticMaterial(DomesticModel domesticModel) throws MessagingException {
         DomesticMaterialEntity domesticMaterial = new DomesticMaterialEntity();
         setDomesticMaterialProperties(domesticMaterial, domesticModel);
-        domesticMaterial.setRegistration(registrationEntity);
+       // domesticMaterial.setRegistration(registrationEntity);
         domesticRepo.save(domesticMaterial);
 
         // Update the RegistrationEntity with the DomesticMaterialId
+        RegistrationEntity registrationEntity = new RegistrationEntity();
         registrationEntity.setDomesticMaterialId(domesticMaterial.getDomesticMaterialId());
         clientRegi.save(registrationEntity);
 
         // Send an email notification
-        emailUtil.domesticEmail(domesticModel.getJwtModel().getEmailId());
-        System.out.println("Email Id: " + domesticModel.getJwtModel().getEmailId());
-
+        emailUtil.domesticEmail(domesticModel.getEmailId());
         return domesticMaterial;
     }
 
@@ -84,7 +83,7 @@ public class MaterialService {
     }
 
     // API for creating or updating a international entry
-        public InternationalMaterialEntity createInternational(InternationalModel internationalModel, Long corporateId) throws Exception {
+    public InternationalMaterialEntity createInternational(InternationalModel internationalModel, Long corporateId) throws Exception {
         System.out.println(corporateId);
         Long internationalMaterialId = internationalModel.getInternationalMaterialId();
 

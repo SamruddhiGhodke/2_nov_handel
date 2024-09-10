@@ -127,17 +127,18 @@ public class TraderController {
             @RequestParam("gst") MultipartFile gst,
             @RequestParam("financial") MultipartFile financial,
             @ModelAttribute JwtModel jwtModel) {
+        TradersEntity traders = null;
         try {
-            TradersEntity traders = jwtService.uploadFileAndUserTrader(gst, financial, jwtModel);
+            traders = jwtService.uploadFileAndUserTrader(gst, financial, jwtModel);
             return ResponseEntity.status(HttpStatus.CREATED).body(traders);
         } catch (IOException | MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @GetMapping("/getTrader")
-    public List<TradersEntity> getTrader() {
+    @GetMapping("/getTraders")
+    public List<TradersEntity> getTrader(@RequestParam Long traderId) {
 
-        return this.jwtService.getTrader();
+        return this.jwtService.getTrader(traderId);
     }
 }

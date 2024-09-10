@@ -1,6 +1,7 @@
 package com.example.jwtProject.Repository;
 
 import com.example.jwtProject.Entity.RegistrationEntity;
+import com.example.jwtProject.Entity.TradersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface ClientRegi extends JpaRepository<RegistrationEntity, Long> {
      public Optional<RegistrationEntity> findByCorporateId(Long corporateId);
 
     RegistrationEntity findByGstCertificateName(String fileName);
+
+
 }

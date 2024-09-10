@@ -7,8 +7,12 @@ public class DomesticModel {
     private String creditPeriod;
     private String quantity;
     private String unitPrice;
+    private Long corporateId;
+    private Long traderId;
+    private Long intermediaryId;
+    private String emailId;
 
-    private JwtModel jwtModel;
+    //private JwtModel jwtModel;
 
 
     public Long getDomesticMaterialId() {
@@ -59,11 +63,43 @@ public class DomesticModel {
         this.unitPrice = unitPrice;
     }
 
-    public JwtModel getJwtModel() {
-        return jwtModel;
+//    public JwtModel getJwtModel() {
+//        return jwtModel;
+//    }
+//
+//    public void setJwtModel(JwtModel jwtModel) {
+//        this.jwtModel = jwtModel;
+//    }
+
+    public Long getCorporateId() {
+        return corporateId;
     }
 
-    public void setJwtModel(JwtModel jwtModel) {
-        this.jwtModel = jwtModel;
+    public void setCorporateId(Long corporateId) {
+        this.corporateId = corporateId;
+    }
+
+    public Long getTraderId() {
+        return traderId;
+    }
+
+    public void setTraderId(Long traderId) {
+        this.traderId = traderId;
+    }
+
+    public Long getIntermediaryId() {
+        return intermediaryId;
+    }
+
+    public void setIntermediaryId(Long intermediaryId) {
+        this.intermediaryId = intermediaryId;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 }

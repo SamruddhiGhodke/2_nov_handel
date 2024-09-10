@@ -60,6 +60,9 @@ public class RegistrationEntity implements UserDetails {
     @Column(name="status")
     private String status;
 
+    @Column(name="loginCount")
+    private String loginCount;
+
     @OneToMany (mappedBy = "registration", fetch = FetchType.EAGER)
     private List<DomesticMaterialEntity> domesticMaterialEntity;
 
@@ -278,6 +281,14 @@ public class RegistrationEntity implements UserDetails {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(String loginCount) {
+        this.loginCount = loginCount;
     }
 }
 

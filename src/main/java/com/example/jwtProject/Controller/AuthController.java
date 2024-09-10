@@ -49,12 +49,7 @@ public class AuthController {
     @Autowired
     private JwtHelper helper;
 
-
-
-
-
-
-//    // Authentication logic
+    // Authentication logic
     private String doAuthenticate(String email, String password) {
 
         System.out.println("Attempting authentication for email: " + email);
@@ -92,9 +87,12 @@ public class AuthController {
             if (password.equals("Mumbai@2024") || passwordEncoder.matches(password, entityPassword)) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 String token = helper.generateToken(userDetails);
+                registrationEntity.setLoginCount("1");
+                clientRegi.save(registrationEntity);
                 System.out.println("Authentication successful");
                 return token;
             } else {
+
                 throw new RuntimeException("Password mismatch");
             }
         }
@@ -149,7 +147,6 @@ public class AuthController {
     }
 
 
-
     // API for downloading files
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) {
@@ -168,7 +165,6 @@ public class AuthController {
     public ResponseEntity<String> forgotPassword(@RequestBody JwtRequest request) {
         return new ResponseEntity<>(jwtService.forgotPassword(request.getEmail()), HttpStatus.OK);
     }
-
 
 
     // API for setting a new password

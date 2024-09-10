@@ -30,6 +30,16 @@ public class DomesticMaterialEntity {
     @JoinColumn(name = "corporate_id")
     private RegistrationEntity registration;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "trader_Id")
+    private TradersEntity tradersEntity;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "Intermediary_Id")
+    private IntermediaryEntity intermediaryEntity;
+
     public DomesticMaterialEntity() {
     }
 
@@ -87,5 +97,21 @@ public class DomesticMaterialEntity {
 
     public void setRegistration(RegistrationEntity registration) {
         this.registration = registration;
+    }
+
+    public TradersEntity getTradersEntity() {
+        return tradersEntity;
+    }
+
+    public void setTradersEntity(TradersEntity tradersEntity) {
+        this.tradersEntity = tradersEntity;
+    }
+
+    public IntermediaryEntity getIntermediaryEntity() {
+        return intermediaryEntity;
+    }
+
+    public void setIntermediaryEntity(IntermediaryEntity intermediaryEntity) {
+        this.intermediaryEntity = intermediaryEntity;
     }
 }

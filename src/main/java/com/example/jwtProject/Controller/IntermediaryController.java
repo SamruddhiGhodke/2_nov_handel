@@ -2,7 +2,6 @@ package com.example.jwtProject.Controller;
 
 import com.example.jwtProject.Entity.AdminEntity;
 import com.example.jwtProject.Entity.IntermediaryEntity;
-import com.example.jwtProject.Entity.TradersEntity;
 import com.example.jwtProject.Model.JwtModel;
 import com.example.jwtProject.Model.JwtRequest;
 import com.example.jwtProject.Model.JwtResponse;
@@ -133,8 +132,9 @@ public class IntermediaryController {
         }
     }
 
-    @GetMapping("/getIntermediary")
-    public List<IntermediaryEntity> getIntermediary() {
-        return this.jwtService.getIntermediary();
+    @GetMapping("/getIntermediaries")
+    public List<IntermediaryEntity> getIntermediary(@RequestParam Long intermediaryId) {
+
+        return this.jwtService.getIntermediary(intermediaryId);
     }
 }

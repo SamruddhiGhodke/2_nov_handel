@@ -23,7 +23,7 @@ public class MaterialController {
     @PostMapping("/domesticMaterial")
     public ResponseEntity<DomesticMaterialEntity> createDomestic(@RequestBody DomesticModel domesticModel) {
         try {
-            Long corporateId = domesticModel.getJwtModel().getCorporateId();
+            Long corporateId = domesticModel.getCorporateId();
             if (corporateId == null) {
                 throw new Exception("Invalid corporateId: corporateId is null");
             }
